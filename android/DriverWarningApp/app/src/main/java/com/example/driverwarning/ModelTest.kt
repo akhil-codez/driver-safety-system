@@ -19,7 +19,7 @@ object ModelTest {
             9999f, 2.0f          // geometry
         )
         // Mock 3 lookahead features (straight road)
-        val safeLookahead = RouteCurvePredictor.LookaheadResult(0f, 9999f, 9999f)
+        val safeLookahead = LookaheadResult(0f, 9999f, 9999f)
         
         val fusedSafe = sensorFusionEngine.fuse(safeImu, safeLookahead)
         val normalizedSafe = sensorFusionEngine.normalizeAll(fusedSafe)
@@ -36,7 +36,7 @@ object ModelTest {
             50.0f, 15.0f         // geometry
         )
         // Mock 3 lookahead features (sharp curve soon)
-        val dangerLookahead = RouteCurvePredictor.LookaheadResult(10f, 45f, 30f)
+        val dangerLookahead = LookaheadResult(10f, 45f, 30f)
         
         val fusedDanger = sensorFusionEngine.fuse(dangerImu, dangerLookahead)
         val normalizedDanger = sensorFusionEngine.normalizeAll(fusedDanger)
