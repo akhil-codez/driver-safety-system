@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -225,6 +226,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, android.hardware.S
             }
 
             val polyline = routeManager.getPolyline()
+            val radii = routeCurvePredictor.computeRadii(polyline)
+            
             isNavigating = true
             statusText.text = "🗺️ NAVIGATING (${polyline.size} pts)"
 
@@ -249,7 +252,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, android.hardware.S
                 }
 
                 // Pre-scan curve segments and mark sharp ones with orange markers
-                val radii = routeCurvePredictor.computeRadii(polyline)
                 var lastMarkedIdx = -50
                 radii.forEachIndexed { i, radius ->
                     if (radius < RouteCurvePredictor.CURVE_THRESHOLD_M && i - lastMarkedIdx > 10) {
@@ -289,8 +291,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, android.hardware.S
             // SensorService holds its own RouteManager internally; we pass via broadcast
             val routeIntent = Intent("com.example.driverwarning.SET_ROUTE").apply {
                 // Encode as parallel float arrays for the broadcast
-                putExtra("lats", FloatArray(polyline.size) { polyline[it].latitude.toFloat() })
-                putExtra("lons", FloatArray(polyline.size) { polyline[it].longitude.toFloat() })
+                putExtra("lats", FloatArray(polyline.size) { i -> polyline[i].latitude.toFloat() })
+                putExtra("lons", FloatArray(polyline.size) { i -> polyline[i].longitude.toFloat() })
             }
             androidx.localbroadcastmanager.content.LocalBroadcastManager
                 .getInstance(this).sendBroadcast(routeIntent)

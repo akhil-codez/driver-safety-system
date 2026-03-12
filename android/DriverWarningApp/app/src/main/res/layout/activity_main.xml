@@ -23,6 +23,16 @@
         android:padding="16dp"
         android:elevation="8dp">
 
+        <TextView
+            android:id="@+id/lookaheadText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🗺️ Road ahead: clear"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
