@@ -11,13 +11,13 @@ from python.feature_extractor import (
     fit_scaler,
     apply_scaler,
     extract_features_from_windows,
-    FEATURE_NAMES
+    FEATURE_NAMES,
+    NUM_FEATURES,
 )
 
 
 def test_feature_count():
-    """Test that exactly 9 features are extracted."""
-    # Create synthetic window data
+    """Test that exactly 12 features are extracted (9 IMU + 3 route-lookahead)."""
     df = pd.DataFrame({
         'speed': [10, 11, 12, 13, 14],
         'gyro_z': [5, 10, 15, 10, 5],
@@ -28,7 +28,7 @@ def test_feature_count():
     
     features = extract_window_features(df)
     
-    assert len(features) == 9, f"Expected 9 features, got {len(features)}"
+    assert len(features) == NUM_FEATURES, f"Expected {NUM_FEATURES} features, got {len(features)}"
 
 
 def test_feature_order():
@@ -97,8 +97,8 @@ def test_feature_extraction_from_windows():
     # Should have 5 rows (one per window)
     assert features_df.shape[0] == 5, f"Expected 5 rows, got {features_df.shape[0]}"
     
-    # Should have 9 columns (features)
-    assert features_df.shape[1] == 9, f"Expected 9 columns, got {features_df.shape[1]}"
+    # Should have 12 columns (9 IMU + 3 lookahead features)
+    assert features_df.shape[1] == NUM_FEATURES, f"Expected {NUM_FEATURES} columns, got {features_df.shape[1]}"
     
     # Column names should match FEATURE_NAMES
     assert list(features_df.columns) == FEATURE_NAMES
@@ -106,21 +106,18 @@ def test_feature_extraction_from_windows():
 
 def test_scaler_fit_apply():
     """Test scaler fitting and application."""
-    # Create synthetic feature data
-    df = pd.DataFrame(np.random.randn(100, 9), columns=FEATURE_NAMES)
+    df = pd.DataFrame(np.random.randn(100, NUM_FEATURES), columns=FEATURE_NAMES)
     
-    # Fit scaler
     scaler = fit_scaler(df)
     
-    # Check that scaler has correct dimensions
-    assert scaler.mean_.shape == (9,), f"Expected mean shape (9,), got {scaler.mean_.shape}"
-    assert scaler.scale_.shape == (9,), f"Expected scale shape (9,), got {scaler.scale_.shape}"
+    assert scaler.mean_.shape == (NUM_FEATURES,), \
+        f"Expected mean shape ({NUM_FEATURES},), got {scaler.mean_.shape}"
+    assert scaler.scale_.shape == (NUM_FEATURES,), \
+        f"Expected scale shape ({NUM_FEATURES},), got {scaler.scale_.shape}"
     
-    # Apply scaler
     X = df.values
     X_scaled = apply_scaler(X, scaler)
     
-    # Scaled data should have mean ~0 and std ~1
     assert np.abs(X_scaled.mean(axis=0)).max() < 0.1, "Scaled data should have mean ~0"
     assert np.abs(X_scaled.std(axis=0) - 1.0).max() < 0.1, "Scaled data should have std ~1"
 
@@ -165,8 +162,8 @@ def test_empty_window():
     
     features = extract_window_features(df)
     
-    # Should still return 9 features
-    assert len(features) == 9
+    # Should still return 12 features (9 IMU + 3 lookahead defaults)
+    assert len(features) == NUM_FEATURES
     
     # Values should be 0 or default
     assert features["current_speed"] == 0.0

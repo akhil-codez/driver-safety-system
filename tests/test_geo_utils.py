@@ -45,55 +45,53 @@ def test_bearing_cardinal_directions():
 
 
 def test_curvature_straight_line():
-    """Test curvature for a straight line (should have large radius)."""
-    # Three points in a straight line
+    """Test curvature for a straight line (should have near-zero curvature)."""
+    # Three points in a straight line (heading north)
     points = [
         (0.0, 0.0),
         (0.001, 0.0),
         (0.002, 0.0)
     ]
     
-    radii = curvature_from_polyline(points)
+    curvatures = curvature_from_polyline(points)
     
-    assert len(radii) == 3
-    # All radii should be very large (essentially infinite)
-    for r in radii:
-        assert r > 10000, f"Straight line should have large radius, got {r}m"
+    assert len(curvatures) == 3
+    # Middle curvature should be very small (straight road → k ≈ 0)
+    for k in curvatures:
+        assert k < 0.01, f"Straight line should have near-zero curvature, got {k}"
 
 
 def test_curvature_triangle():
-    """Test curvature with a simple triangle."""
-    # Three points forming a triangle (not a straight line)
+    """Test curvature with a simple triangle (non-collinear points)."""
+    # Three points forming a triangle
     points = [
         (0.0, 0.0),
         (0.001, 0.0),
         (0.0005, 0.001)
     ]
     
-    radii = curvature_from_polyline(points)
+    curvatures = curvature_from_polyline(points)
     
-    assert len(radii) == 3
-    # Middle point should have finite curvature
-    assert radii[1] < 999999, f"Triangle should have finite curvature, got {radii[1]}m"
-    assert radii[1] > 1, f"Curvature radius should be positive, got {radii[1]}m"
+    assert len(curvatures) == 3
+    # Middle point should have non-zero curvature
+    assert curvatures[1] > 0, f"Triangle middle point should have positive curvature, got {curvatures[1]}"
 
 
 def test_curvature_insufficient_points():
-    """Test curvature with insufficient points."""
-    # Less than 3 points
+    """Test curvature with insufficient points (< 3)."""
     points = [(0.0, 0.0), (0.001, 0.0)]
     
-    radii = curvature_from_polyline(points)
+    curvatures = curvature_from_polyline(points)
     
-    assert len(radii) == 2
-    # Should return large radius (infinite) for insufficient points
-    for r in radii:
-        assert r == 999999.0
+    assert len(curvatures) == 2
+    # Should return 0 curvature (no turn info without 3 points)
+    for k in curvatures:
+        assert k == 0.0, f"Expected 0.0 curvature, got {k}"
 
 
 def test_curvature_sharp_curve():
     """Test curvature with a sharp curve."""
-    # Points forming a tight curve
+    # Points forming a tight 90-degree corner
     points = [
         (0.0, 0.0),
         (0.0001, 0.0),
@@ -101,12 +99,12 @@ def test_curvature_sharp_curve():
         (0.0, 0.0001)
     ]
     
-    radii = curvature_from_polyline(points)
+    curvatures = curvature_from_polyline(points)
     
-    assert len(radii) == 4
-    # Middle points should have small radius (sharp curve)
-    assert radii[1] < 100, f"Sharp curve should have small radius, got {radii[1]}m"
-    assert radii[2] < 100, f"Sharp curve should have small radius, got {radii[2]}m"
+    assert len(curvatures) == 4
+    # Middle points should have significantly positive curvature (sharp turn)
+    assert curvatures[1] > 0.001, f"Sharp curve should have positive curvature, got {curvatures[1]}"
+    assert curvatures[2] > 0.001, f"Sharp curve should have positive curvature, got {curvatures[2]}"
 
 
 if __name__ == "__main__":

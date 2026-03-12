@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1A202C">
+
+    <!-- Google Maps Fragment -->
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Top Dark Overlay with Info -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:orientation="vertical"
+        android:background="@drawable/dark_overlay"
+        android:layout_margin="16dp"
+        android:padding="16dp"
+        android:elevation="8dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Prediction:"
+                android:textColor="#9CA3AF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/predictionText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="--"
+                android:textColor="#E5E7EB"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/locationText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Press START to begin monitoring"
+            android:textColor="#6B7280"
+            android:textSize="11sp"
+            android:fontFamily="monospace"
+            android:layout_marginTop="8dp" />
+
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="🚗 Driver Warning System"
+            android:textColor="#E5E7EB"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <!-- Bottom Floating Controls -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:orientation="horizontal"
+        android:layout_marginBottom="32dp"
+        android:gravity="center">
+
+        <!-- Debug Button (Left) -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="24dp">
+
+            <ImageButton
+                android:id="@+id/debugButton"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/circle_button"
+                android:src="@android:drawable/ic_menu_info_details"
+                android:tint="#E5E7EB"
+                android:scaleType="centerInside"
+                android:elevation="12dp"
+                android:contentDescription="Debug" />
+        </FrameLayout>
+
+        <!-- START/STOP Button (Center - Large) -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/startButton"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/circle_button_large"
+                android:text="START"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:elevation="16dp"
+                android:stateListAnimator="@null" />
+
+            <Button
+                android:id="@+id/stopButton"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:background="@drawable/circle_button_large"
+                android:text="STOP"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:elevation="16dp"
+                android:visibility="gone"
+                android:stateListAnimator="@null" />
+        </FrameLayout>
+
+        <!-- Settings Button (Right) -->
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp">
+
+            <ImageButton
+                android:id="@+id/settingsButton"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:background="@drawable/circle_button"
+                android:src="@android:drawable/ic_menu_preferences"
+                android:tint="#E5E7EB"
+                android:scaleType="centerInside"
+                android:elevation="12dp"
+                android:contentDescription="Settings" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <!-- Navigation Control Card (Top Right) -->
+    <LinearLayout
+        android:id="@+id/navControlCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:orientation="vertical"
+        android:background="@drawable/dark_overlay"
+        android:layout_marginTop="160dp"
+        android:layout_marginEnd="16dp"
+        android:padding="8dp"
+        android:elevation="8dp">
+
+        <ImageButton
+            android:id="@+id/navButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_menu_mapmode"
+            android:tint="#2196F3"
+            android:scaleType="centerInside"
+            android:contentDescription="Navigate" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33FFFFFF"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp" />
+
+        <ImageButton
+            android:id="@+id/layersButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_dialog_map"
+            android:tint="#E5E7EB"
+            android:scaleType="centerInside"
+            android:contentDescription="Map Layers" />
+    </LinearLayout>
+
+    <!-- Destination Input Overlay (Initially Gone) -->
+    <LinearLayout
+        android:id="@+id/destinationContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:orientation="vertical"
+        android:background="#1A202C"
+        android:elevation="20dp"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set Destination"
+            android:textColor="#E5E7EB"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <EditText
+            android:id="@+id/destinationInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter lat,lon (e.g. 37.77,-122.42)"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#9CA3AF"
+            android:background="@drawable/dark_overlay"
+            android:padding="12dp"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end">
+
+            <Button
+                android:id="@+id/cancelNavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textColor="#EF4444"
+                android:background="?attr/selectableItemBackground"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/startNavButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Start Navigation"
+                android:backgroundTint="#2196F3"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>
